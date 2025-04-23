@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .game-container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .choices {
+            margin-bottom: 20px;
+        }
+        .choices button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .choices button:hover {
+            background-color: #ddd;
+        }
+        .result {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .score {
+            margin-top: 20px;
+        }
+        .score p {
+            font-size: 18px;
+        }
+        .reset-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: none;
+        }
+        .reset-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Rock Paper Scissors</h1>
+        <div class="choices">
+            <button id="rock">Rock</button>
+            <button id="paper">Paper</button>
+            <button id="scissors">Scissors</button>
+        </div>
+        <div class="result">
+            <p id="result-text">Choose your move!</p>
+        </div>
+        <div class="score">
+            <p>Player Wins: <span id="player-wins">0</span></p>
+            <p>Computer Wins: <span id="computer-wins">0</span></p>
+        </div>
+        <button class="reset-btn" id="reset-btn">Play Again</button>
+    </div>
+
+    <script>
+        const playerWinsDisplay = document.getElementById('player-wins');
+        const computerWinsDisplay = document.getElementById('computer-wins');
+        const resultText = document.getElementById('result-text');
+        const resetButton = document.getElementById('reset-btn');
+
+        let playerWins = 0;
+        let computerWins = 0;
+
+        const choices = ['rock', 'paper', 'scissors'];
+
+        function computerChoice() {
+            const randomIndex = Math.floor(Math.random() * choices.length);
+            return choices[randomIndex];
+        }
+
+        function determineWinner(playerChoice, computerChoice) {
+            if (playerChoice === computerChoice) {
+                return 'draw';
+            }
+            if (
+                (playerChoice === 'rock' && computerChoice === 'scissors') ||
+                (playerChoice === 'scissors' && computerChoice === 'paper') ||
+                (playerChoice === 'paper' && computerChoice === 'rock')
+            ) {
+                return 'player';
+            }
+            return 'computer';
+        }
+
+        function updateScore(winner) {
+            if (winner === 'player') {
+                playerWins++;
+                playerWinsDisplay.textContent = playerWins;
+            } else if (winner === 'computer') {
+                computerWins++;
+                computerWinsDisplay.textContent = computerWins;
+            }
+        }
+
+        function checkGameOver() {
+            if (playerWins === 5 || computerWins === 5) {
+                if (playerWins === 5) {
+                    resultText.textContent = 'You won the game!';
+                } else {
+                    resultText.textContent = 'Computer won the game!';
+                }
+                resetButton.style.display = 'inline-block';
+                return true;
+            }
+            return false;
+        }
+
+        function handlePlayerChoice(playerChoice) {
+            if (checkGameOver()) return;
+
+            const compChoice = computerChoice();
+            const winner = determineWinner(playerChoice, compChoice);
+
+            if (winner === 'draw') {
+                resultText.textContent = `It's a draw! You both chose ${playerChoice}.`;
+            } else if (winner === 'player') {
+                resultText.textContent = `You win! ${playerChoice} beats ${compChoice}.`;
+            } else {
+                resultText.textContent = `Computer wins! ${compChoice} beats ${playerChoice}.`;
+            }
+
+            updateScore(winner);
+            checkGameOver();
+        }
+
+        document.getElementById('rock').addEventListener('click', () => handlePlayerChoice('rock'));
+        document.getElementById('paper').addEventListener('click', () => handlePlayerChoice('paper'));
+        document.getElementById('scissors').addEventListener('click', () => handlePlayerChoice('scissors'));
+
+        resetButton.addEventListener('click', () => {
+            playerWins = 0;
+            computerWins = 0;
+            playerWinsDisplay.textContent = playerWins;
+            computerWinsDisplay.textContent = computerWins;
+            resultText.textContent = 'Choose your move!';
+            resetButton.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
